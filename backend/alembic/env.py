@@ -7,6 +7,7 @@ from alembic import context
 
 from app.database import Base
 from app.models.employee import Employee
+from app.models.availability import Availability
 
 from app.database import SQLALCHEMY_DATABASE_URL
 
