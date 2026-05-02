@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth
+from app.api.v1 import api
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+app.include_router(api.api_router, prefix="/api/v1")
 
 @app.get("/")
 def index():
