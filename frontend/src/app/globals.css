@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+@theme {
+    --beige-50:  #fdf8f0;
+    --beige-100: #f7f0e0;
+    --beige-200: #e8dfc0;
+    --beige-300: #d4c9b0;
+    --beige-400: #bfb49a;
+    --beige-500: #a89d84;
+    --beige-600: #8a7f6a;
+    --beige-700: #6e6454;
+    --beige-800: #524a3e;
+    --beige-900: #2c2924;
+    --beige-950: #1a1714;
+
+    /* ── Semantic backgrounds ────────────────── */
+    --color-bg-page:           var(--beige-50);   /* outer page wash */
+    --color-bg-surface:        var(--beige-100); /* cards, panels */
+    --color-bg-surface-raised: var(--beige-200); /* elevated / tinted */
+    --color-bg-subtle:         var(--beige-300); /* hover states, tags */
+    --color-bg-muted:          var(--beige-400); /* disabled, placeholder fills */
+    --color-bg-inverse:        var(--beige-900); /* dark panels, tooltips */
+
+    /* ── Semantic borders ────────────────────── */
+    --color-border-subtle:  var(--beige-200); /* hairline dividers */
+    --color-border-default: var(--beige-300); /* inputs, cards */
+    --color-border-strong:  var(--beige-500); /* focused inputs */
+    --color-border-inverse: var(--beige-700); /* borders on dark bg */
+
+    /* ── Semantic text ───────────────────────── */
+    --color-text-heading:     var(--beige-900); /* h1 – h3 */
+    --color-text-body:        var(--beige-800); /* paragraphs */
+    --color-text-secondary:   var(--beige-700); /* labels, captions */
+    --color-text-placeholder: var(--beige-500); /* input placeholders */
+    --color-text-disabled:    var(--beige-400); /* disabled controls */
+    --color-text-inverse:     var(--beige-50);  /* text on dark bg */
+    --color-text-inverse-muted:var(--beige-300); /* secondary on dark bg */
+
+    --font-heading: var(--font-lobster);
+
+    /* ── Interactive / brand ─────────────────── */
+    --color-interactive-default: var(--beige-700); /* buttons, links */
+    --color-interactive-hover:   var(--beige-800); /* hover state */
+    --color-interactive-active:  var(--beige-900); /* pressed state */
+    --color-interactive-subtle:  var(--beige-200); /* ghost / outline fill */
+}
