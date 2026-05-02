@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 class EmployeeCreate(BaseModel):
     email: EmailStr
@@ -11,8 +11,7 @@ class EmployeeResponse(BaseModel):
     name: str
     is_admin: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Token(BaseModel):
     access_token: str
