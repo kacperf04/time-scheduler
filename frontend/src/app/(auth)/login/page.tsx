@@ -25,11 +25,9 @@ export default function LoginPage() {
             formData.append("username", email);
             formData.append("password", password);
 
-            const response = await api.post("/auth/login", formData, {
+            await api.post("/auth/login", formData, {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
             });
-
-            localStorage.setItem("token", response.data.access_token);
 
             router.push("/dashboard");
         } catch (err) {
