@@ -30,9 +30,9 @@ export default function WeeklyCalendar(props: WeeklyCalendarProps) {
 
     const week = getCurrentWeek(offset);
     return (
-        <div className="max-w-3/4 rounded-lg border-2 border-border-default">
+        <div className="rounded-lg border-border-default overflow-hidden">
             <WeeklyCalendarHeader days={week}/>
-            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={23}/>
+            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={20} mode={mode}/>
         </div>
     );
 }
