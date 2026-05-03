@@ -5,7 +5,7 @@ interface WeeklyCalendarHeaderProps {
 
 export default function WeeklyCalendarHeader(props: WeeklyCalendarHeaderProps) {
     return (
-        <div className="flex flex-row w-full bg-text-body rounded-t-lg">
+        <div className="flex flex-row w-full bg-text-body rounded-t-lg pb-3">
             <div className="w-20 shrink-0 flex flex-col justify-center items-center">
                 <span className="text-xl font-bold text-text-inverse py-2">Hour</span>
             </div>
