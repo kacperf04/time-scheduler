@@ -1,11 +1,13 @@
 import WeeklyCalendarBody from "./WeeklyCalendarBody";
 import WeeklyCalendarHeader from "./WeeklyCalendarHeader";
+import { Availability } from "@/types";
 
 interface WeeklyCalendarProps {
     mode?: WeeklyCalendarMode;
     offset?: number;
     hourLowerBound: number;
     hourUpperBound: number;
+    userAvailability: Availability[];
 }
 
 export type WeeklyCalendarMode = "view" | "edit";
@@ -32,7 +34,7 @@ export default function WeeklyCalendar(props: WeeklyCalendarProps) {
     return (
         <div className="rounded-lg border-border-default overflow-hidden">
             <WeeklyCalendarHeader days={week}/>
-            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={20} mode={mode}/>
+            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={20} mode={mode} userAvailability={props.userAvailability}/>
         </div>
     );
 }

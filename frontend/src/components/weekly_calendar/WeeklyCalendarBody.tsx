@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { WeeklyCalendarMode } from "./WeeklyCalendar";
+import { Availability } from "@/types";
 
 interface WeeklyCalendarBodyProps {
     days: string[];
     hourLowerBound: number;
     hourUpperBound: number;
     mode: WeeklyCalendarMode;
+    userAvailability: Availability[];
 }
 
 const getWorkingHours = (lowerBound: number, upperBound: number) => {
@@ -70,6 +72,14 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                             const hourTo = hour + 1;
                             const cellId = hourFrom + ";" + hourTo + ";" + day;
                             const isSelected = selectedCells.has(cellId);
+
+                            let isViewModeCellSelected = false;
+                            props.userAvailability.map((av: Availability) => {
+                                if (av.date == day && av.start_hour <= hourFrom && av.end_hour >= hourTo && props.mode == "view") {
+                                    isViewModeCellSelected = true;
+                                    return;
+                                }
+                            });
                             
                             return (
                                 <div 
@@ -78,7 +88,7 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                                     onMouseDown={() => handleCellMouseDown(cellId)}
                                     onMouseEnter={() => handleCellMouseEnter(cellId)}
                                     className={`h-10 flex justify-center items-center text-center text-lg text-text-body font-bold select-none ${props.mode == "edit" ? "cursor-pointer" : ""} border border-border-inverse
-                                                ${isSelected
+                                                ${(isSelected || isViewModeCellSelected)
                                                     ? "bg-text-secondary"
                                                     : "bg-bg-surface-raised"
                                                 }
