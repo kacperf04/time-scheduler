@@ -11,6 +11,7 @@ interface WeeklyCalendarBodyProps {
     hourUpperBound: number;
     mode: WeeklyCalendarMode;
     userAvailability: Availability[];
+    editDisabled: boolean;
 }
 
 const getWorkingHours = (lowerBound: number, upperBound: number) => {
@@ -58,15 +59,24 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
     }, []);
 
     const handleCancelEdit = () => {
+        if (props.editDisabled) return;
+
         setSelectedCells(new Set()); 
         setMode("view");
+    };
+
+    const handleEditStart = () => {
+        if (props.editDisabled) return;
+
+        setMode("edit");
     };
 
     return (
         <div className="flex flex-row w-full h-full bg-bg-surface-raised">
             <WeeklyCalendarMenu 
+                disabled={props.editDisabled}
                 editMode={mode === "edit"} 
-                onEditStart={() => setMode("edit")}
+                onEditStart={handleEditStart}
                 onEditCancel={handleCancelEdit}
                 onSave={() => {
                     setMode("view");
