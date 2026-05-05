@@ -32,7 +32,7 @@ export default function Dashboard() {
     };
 
     const switchToNextWeek = () => {
-        if (weekOffset == 0) return;
+        if (weekOffset == -1) return;
 
         setWeekOffset(weekOffset - 1);
     };
@@ -47,7 +47,7 @@ export default function Dashboard() {
                 <div className="flex flex-row w-full px-8 justify-between">
                     <button className={btnClass} onClick={switchToPrevWeek}>Previous week</button>
                     <button className="text-text-body underline cursor-pointer" onClick={() => { setWeekOffset(0) }}>Reset</button>
-                    <button disabled={weekOffset == 0} className={btnClass + `${weekOffset == 0 ? "cursor-default bg-text-disabled" : ""}`} onClick={switchToNextWeek}>Next week</button>
+                    <button disabled={weekOffset == -1} className={btnClass + `${weekOffset == -1 ? "cursor-default bg-text-disabled" : ""}`} onClick={switchToNextWeek}>Next week</button>
                 </div>
                 <WeeklyCalendar mode="view" offset={weekOffset} hourLowerBound={8} hourUpperBound={20} userAvailability={availabilities}/>
             </div>

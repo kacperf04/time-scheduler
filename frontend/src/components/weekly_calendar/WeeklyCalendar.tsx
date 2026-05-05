@@ -34,7 +34,7 @@ export default function WeeklyCalendar(props: WeeklyCalendarProps) {
     return (
         <div className="rounded-lg border-border-default overflow-hidden">
             <WeeklyCalendarHeader days={week}/>
-            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={20} mode={mode} userAvailability={props.userAvailability}/>
+            <WeeklyCalendarBody days={week} hourLowerBound={8} hourUpperBound={20} mode={mode} userAvailability={props.userAvailability} editDisabled={offset != -1}/>
         </div>
     );
 }
