@@ -21,9 +21,14 @@ export default function LoginPage() {
         setError("");
 
         try {
+            const formTarget = e.currentTarget;
+            const domData = new FormData(formTarget);
+        
+            const rawEmail = domData.get("username") as string;
+            const rawPassword = domData.get("password") as string;
             const formData = new URLSearchParams();
-            formData.append("username", email);
-            formData.append("password", password);
+            formData.append("username", rawEmail);
+            formData.append("password", rawPassword);
 
             await api.post("/auth/login", formData, {
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -45,13 +50,16 @@ export default function LoginPage() {
       <>
         {error && <Toast message={error}/>}
 
-        <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center gap-6 w-full">
+        <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col justify-center items-center gap-6 w-full">
           <InputGroup  
             label="Email"
             id="login-email"
             type="email"
             placeholder="user@example.com"
+            value={email}
+            name="username"
             required={true}
+            autoComplete="username"
             onChange={(e) => setEmail(e.target.value)}
           />
           <InputGroup  
@@ -59,7 +67,10 @@ export default function LoginPage() {
             id="login-pass"
             type="password"
             placeholder="Your strong password"
+            value={password}
+            name="password"
             required={true}
+            autoComplete="password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <button

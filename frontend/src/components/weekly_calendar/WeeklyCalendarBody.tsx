@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { WeeklyCalendarMode } from "./WeeklyCalendar";
 import { Availability } from "@/types";
+import WeeklyCalendarMenu from "../ui/WeeklyCalendarMenu";
 
 interface WeeklyCalendarBodyProps {
     days: string[];
@@ -18,34 +19,37 @@ const getWorkingHours = (lowerBound: number, upperBound: number) => {
 
 export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
     const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
+    const pastSelectedCells = props.userAvailability;
+    
+    const [mode, setMode] = useState<WeeklyCalendarMode>(props.mode);
+    
     const isDragging = useRef(false);
     const dragAction = useRef<"add" | "remove">("add");
 
     const workingHours = getWorkingHours(props.hourLowerBound, props.hourUpperBound);
 
     const handleCellMouseDown = useCallback((cellId: string) => {
-        if (props.mode != "edit") return;
+        if (mode !== "edit") return;
 
         isDragging.current = true;
         dragAction.current = selectedCells.has(cellId) ? "remove" : "add";
 
         setSelectedCells(prev => {
             const next = new Set(prev);
-            dragAction.current == "add" ? next.add(cellId) : next.delete(cellId);
-
+            dragAction.current === "add" ? next.add(cellId) : next.delete(cellId);
             return next;
         });
-    }, [props.mode, selectedCells]);
+    }, [mode, selectedCells]);
 
     const handleCellMouseEnter = useCallback((cellId: string) => {
-        if (!isDragging.current || props.mode !== "edit") return;
+        if (!isDragging.current || mode !== "edit") return;
 
         setSelectedCells(prev => {
-        const next = new Set(prev);
-        dragAction.current == "add" ? next.add(cellId) : next.delete(cellId);
-        return next;
+            const next = new Set(prev);
+            dragAction.current === "add" ? next.add(cellId) : next.delete(cellId);
+            return next;
         });
-    }, [props.mode]);
+    }, [mode]);
 
     useEffect(() => {
         const handleMouseUp = () => { isDragging.current = false; };
@@ -53,8 +57,22 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
         return () => window.removeEventListener("mouseup", handleMouseUp);
     }, []);
 
+    const handleCancelEdit = () => {
+        setSelectedCells(new Set()); 
+        setMode("view");
+    };
+
     return (
         <div className="flex flex-row w-full h-full bg-bg-surface-raised">
+            <WeeklyCalendarMenu 
+                editMode={mode === "edit"} 
+                onEditStart={() => setMode("edit")}
+                onEditCancel={handleCancelEdit}
+                onSave={() => {
+                    setMode("view");
+                }}
+                onDelete={() => setSelectedCells(new Set())}
+            />
             
             <div className="w-20 shrink-0 flex flex-col bg-text-body">
                 {workingHours.map(hour => (
@@ -74,7 +92,7 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                             const isSelected = selectedCells.has(cellId);
 
                             let isViewModeCellSelected = false;
-                            props.userAvailability.map((av: Availability) => {
+                            pastSelectedCells.map((av: Availability) => {
                                 if (av.date == day && av.start_hour <= hourFrom && av.end_hour >= hourTo && props.mode == "view") {
                                     isViewModeCellSelected = true;
                                     return;
@@ -105,7 +123,6 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                                                 `       
                                             }
                                 >
-                                    
                                 </div>
                             )
                         })}
