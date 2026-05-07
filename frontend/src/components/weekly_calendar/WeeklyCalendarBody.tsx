@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { WeeklyCalendarMode } from "./WeeklyCalendar";
 import { Availability } from "@/types";
 import WeeklyCalendarMenu from "../ui/WeeklyCalendarMenu";
+import api from "@/lib/api";
 
 interface WeeklyCalendarBodyProps {
     days: string[];
@@ -71,6 +72,36 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
         setMode("edit");
     };
 
+    const handleEditSave = async () => {
+        if (props.editDisabled) return;
+
+        try {
+            const results = await Promise.allSettled(
+                [...selectedCells].map((cell) => {
+                    const [startHour, endHour, date] = cell.split(";");
+
+                    const availabilityData = {
+                        date: date,
+                        start_hour: startHour,
+                        end_hour: endHour,
+                        priority: 3
+                    };
+
+                    return api.post("/availabilities", availabilityData);
+                })
+            );
+
+            const failures = results.filter(r => r.status == "rejected");
+            if (failures.length > 0) {
+                console.error(`${failures.length} zapisów się wyjebało`, failures);
+            }
+
+            setMode("view");
+        } catch (err) {
+            console.error("Critical save error: ", err);
+        }
+    };
+
     return (
         <div className="flex flex-row w-full h-full bg-bg-surface-raised">
             <WeeklyCalendarMenu 
@@ -78,9 +109,7 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                 editMode={mode === "edit"} 
                 onEditStart={handleEditStart}
                 onEditCancel={handleCancelEdit}
-                onSave={() => {
-                    setMode("view");
-                }}
+                onSave={handleEditSave}
                 onDelete={() => setSelectedCells(new Set())}
             />
             
