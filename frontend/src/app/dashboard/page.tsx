@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import WeeklyCalendar from "@/components/weekly_calendar/WeeklyCalendar";
+import WeeklyCalendar, { WeeklyCalendarMode } from "@/components/weekly_calendar/WeeklyCalendar";
 import api from "@/lib/api";
 import { useEffect, useState } from "react";
 
@@ -9,6 +9,7 @@ export default function Dashboard() {
     const [availabilities, setAvailabilities] = useState([]);
     const [weekOffset, setWeekOffset] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [mode, setMode] = useState<WeeklyCalendarMode>("view");
 
     const btnClass = `py-2 w-36 bg-text-body rounded-lg text-text-inverse cursor-pointer`;
 
@@ -29,6 +30,9 @@ export default function Dashboard() {
 
     const switchToPrevWeek = () => {
         setWeekOffset(weekOffset + 1);
+        if (weekOffset != -1) {
+            setMode("view");
+        }
     };
 
     const switchToNextWeek = () => {
@@ -49,7 +53,7 @@ export default function Dashboard() {
                     <button className="text-text-body underline cursor-pointer" onClick={() => { setWeekOffset(0) }}>Reset</button>
                     <button disabled={weekOffset == -1} className={btnClass + `${weekOffset == -1 ? "cursor-default bg-text-disabled" : ""}`} onClick={switchToNextWeek}>Next week</button>
                 </div>
-                <WeeklyCalendar mode="view" offset={weekOffset} hourLowerBound={8} hourUpperBound={20} userAvailability={availabilities}/>
+                <WeeklyCalendar mode={mode} offset={weekOffset} hourLowerBound={8} hourUpperBound={20} userAvailability={availabilities}/>
             </div>
         </main>
     );
