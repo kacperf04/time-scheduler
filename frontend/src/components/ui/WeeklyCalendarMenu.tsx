@@ -28,7 +28,7 @@ export default function WeeklyCalendarMenu({
                         : "opacity-0 -translate-x-2 pointer-events-none w-0"
                 }`}
             >
-                <Save onClick={onSave} size={32} className="shrink-0 w-6 h-6" />
+                <Save onClick={onSave} size={32} className="shrink-0 w-6 h-6 cursor-pointer" />
                 <Trash onClick={onDelete} size={32} className="shrink-0 w-6 h-6 cursor-pointer" />
             </div>
 
