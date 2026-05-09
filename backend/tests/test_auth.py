@@ -30,9 +30,9 @@ def test_login_success(client):
     )
 
     assert response.status_code == 200, "Incorrect status code"
-    data = response.json()
-    assert "access_token" in data
-    assert data["token_type"] == "bearer"
+    assert response.json() == {"message": "logged in successfully"}
+    assert "token" in response.cookies, "Token cookie was not set"
+    assert response.cookies["token"] is not None, "Token cookie is empty"
 
 
 def test_login_wrong_password(client):
