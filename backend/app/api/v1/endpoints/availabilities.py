@@ -41,6 +41,73 @@ def create_availability(
 
     return new_availability
 
+
+@router.post("/bulk", response_model=list[AvailabilityResponse])
+def create_bulk_availability(
+    availabilities_in: list[AvailabilityCreate],
+    db: Session = Depends(get_db),
+    current_user: Employee = Depends(get_current_user)
+):
+    slots = sorted(availabilities_in, key=lambda x: (x.date, x.start_hour))
+
+    merged: list[AvailabilityCreate] = []
+    i = 0
+    while i < len(slots):
+        current = slots[i]
+        while (
+            i + 1 < len(slots)
+            and slots[i + 1].date == current.date
+            and slots[i + 1].start_hour == current.end_hour
+        ):
+            i += 1
+            current = AvailabilityCreate(
+                date=current.date,
+                start_hour=current.start_hour,
+                end_hour=slots[i].end_hour,
+                priority=current.priority
+            )
+        merged.append(current)
+        i += 1
+
+    dates = list({s.date for s in merged})
+    existing = db.query(Availability).filter(
+        Availability.employee_id == current_user.id,
+        Availability.date.in_(dates)
+    ).all()
+
+    for slot in merged:
+        overlap = next(
+            (ex for ex in existing
+             if ex.date == slot.date
+             and ex.start_hour < slot.end_hour
+             and ex.end_hour > slot.start_hour),
+            None
+        )
+        if overlap:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Overlap detected with existing slot: {overlap.start_hour}:00-{overlap.end_hour}:00"
+            )
+
+    new_availabilities = [
+        Availability(
+            employee_id=current_user.id,
+            date=s.date,
+            start_hour=s.start_hour,
+            end_hour=s.end_hour,
+            priority=s.priority
+        )
+        for s in merged
+    ]
+
+    db.add_all(new_availabilities)
+    db.commit()
+    for a in new_availabilities:
+        db.refresh(a)
+
+    return new_availabilities
+
+
 @router.get("/me", response_model=List[AvailabilityResponse])
 def get_employee_availabilities(
     db: Session = Depends(get_db),

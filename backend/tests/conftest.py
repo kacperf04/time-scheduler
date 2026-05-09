@@ -43,6 +43,29 @@ def client(db_session):
             pass
 
     app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as c:
+    with TestClient(app, base_url="http://testserver/api/v1") as c:
         yield c
     app.dependency_overrides.clear()
+
+@pytest.fixture
+def test_user(client):
+    """Creates a user in the database and returns their login credentials."""
+    user_data = {
+        "email": "worker@example.com", 
+        "name": "Worker", 
+        "password": "securepassword"
+    }
+    
+    client.post("/auth/register", json=user_data) 
+    
+    return user_data
+
+@pytest.fixture
+def authorized_client(client, test_user):
+    """Returns a TestClient that is already authenticated."""
+    client.post(
+        "/auth/login", 
+        data={"username": test_user["email"], "password": test_user["password"]}
+    )
+    
+    return client
