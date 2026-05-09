@@ -80,21 +80,16 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                 [...selectedCells].map((cell) => {
                     const [startHour, endHour, date] = cell.split(";");
 
-                    const availabilityData = {
+                    return {
                         date: date,
                         start_hour: startHour,
                         end_hour: endHour,
                         priority: 3
                     };
-
-                    return api.post("/availabilities", availabilityData);
                 })
             );
 
-            const failures = results.filter(r => r.status == "rejected");
-            if (failures.length > 0) {
-                console.error(`${failures.length} zapisów się wyjebało`, failures);
-            }
+            const response = await api.post("/availabilities/bulk", results.map(res => { return res["value"] }));
 
             setMode("view");
         } catch (err) {
