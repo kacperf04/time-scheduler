@@ -21,7 +21,23 @@ const getWorkingHours = (lowerBound: number, upperBound: number) => {
 
 export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
     const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
+    const [confirmedCells, setConfirmedCells] = useState<Set<string>>(new Set());
     const pastSelectedCells = props.userAvailability;
+
+    useEffect(() => {
+        const newSet = new Set<string>();
+        
+        props.userAvailability.forEach((cell) => {
+            const cellId = `${cell.start_hour};${cell.end_hour};${cell.date}`;
+            newSet.add(cellId);
+        });
+
+        console.log("userAvailability:", props.userAvailability);
+        console.log("confirmedCells built:", [...newSet]);
+
+        setConfirmedCells(newSet);
+        
+    }, [props.userAvailability]);
     
     const [mode, setMode] = useState<WeeklyCalendarMode>(props.mode);
     
@@ -33,6 +49,8 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
     const handleCellMouseDown = useCallback((cellId: string) => {
         if (mode !== "edit") return;
 
+        if (confirmedCells.has(cellId)) return;
+
         isDragging.current = true;
         dragAction.current = selectedCells.has(cellId) ? "remove" : "add";
 
@@ -41,17 +59,19 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
             dragAction.current === "add" ? next.add(cellId) : next.delete(cellId);
             return next;
         });
-    }, [mode, selectedCells]);
+    }, [mode, selectedCells, confirmedCells]);
 
     const handleCellMouseEnter = useCallback((cellId: string) => {
         if (!isDragging.current || mode !== "edit") return;
+
+        if (confirmedCells.has(cellId)) return;
 
         setSelectedCells(prev => {
             const next = new Set(prev);
             dragAction.current === "add" ? next.add(cellId) : next.delete(cellId);
             return next;
         });
-    }, [mode]);
+    }, [mode, confirmedCells]);
 
     useEffect(() => {
         const handleMouseUp = () => { isDragging.current = false; };
@@ -74,6 +94,8 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
 
     const handleEditSave = async () => {
         if (props.editDisabled) return;
+
+        setConfirmedCells(prev => new Set([...prev, ...selectedCells]));
 
         try {
             const results = await Promise.allSettled(
@@ -122,12 +144,23 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                         {workingHours.slice(0, workingHours.length - 1).map(hour => {
                             const hourFrom = hour;
                             const hourTo = hour + 1;
-                            const cellId = hourFrom + ";" + hourTo + ";" + day;
+                            const cellId = `${String(hourFrom)};${String(hourTo)};${day}`;
                             const isSelected = selectedCells.has(cellId);
+                            const isConfirmed = [...confirmedCells].some((cell) => {
+                                const [startHourString, endHourString, date] = cell.split(";");
+                                const startHour = parseInt(startHourString);
+                                const endHour = parseInt(endHourString);
+                                return date === day && startHour <= hourFrom && endHour >= hourTo;
+                            });
 
                             let isViewModeCellSelected = false;
-                            pastSelectedCells.map((av: Availability) => {
-                                if (av.date == day && av.start_hour <= hourFrom && av.end_hour >= hourTo && props.mode == "view") {
+                            [...confirmedCells].map((cell) => {
+                                const [startHourString, endHourString, date] = cell.split(";");
+                                
+                                const startHour = parseInt(startHourString);
+                                const endHour = parseInt(endHourString);
+
+                                if (date == day && startHour <= hourFrom && endHour >= hourTo && props.mode == "view") {
                                     isViewModeCellSelected = true;
                                     return;
                                 }
@@ -140,7 +173,10 @@ export default function WeeklyCalendarBody(props: WeeklyCalendarBodyProps) {
                                     onMouseDown={() => handleCellMouseDown(cellId)}
                                     onMouseEnter={() => handleCellMouseEnter(cellId)}
                                     className={`h-10 flex justify-center items-center text-center text-lg text-text-body font-bold select-none ${props.mode == "edit" ? "cursor-pointer" : ""} border border-border-inverse
-                                                ${(isSelected || isViewModeCellSelected)
+                                                ${
+                                                isConfirmed
+                                                    ? "bg-bg-inverse"
+                                                    : (isSelected || isViewModeCellSelected)
                                                     ? "bg-text-secondary"
                                                     : "bg-bg-surface-raised"
                                                 }
