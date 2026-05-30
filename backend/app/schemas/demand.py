@@ -43,6 +43,20 @@ class DemandBase(BaseModel):
 class DemandCreate(DemandBase):
     slots: List[DemandSlotCreate] = []
 
+
+class DemandUpdate(BaseModel):
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    is_posted: Optional[bool] = None
+    slots: Optional[List[DemandSlotCreate]] = None
+
+    @model_validator(mode="after")
+    def validate_dates(self) -> 'DemandUpdate':
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValueError("start_date cannot be after end_date")
+        return self
+
+
 class DemandResponse(DemandBase):
     id: int
     created_timestamp: datetime
