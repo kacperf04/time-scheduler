@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { isAxiosError } from "axios";
+import AuthContainer from "@/components/auth/AuthContainer";
+import InputGroup from "@/components/auth/InputGroup";
 
-import InputGroup from "@/components/ui/InputGroup";
-import Toast from "@/components/ui/Toast";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -47,10 +47,8 @@ export default function LoginPage() {
     };
 
     return (
-      <>
-        {error && <Toast message={error}/>}
-
-        <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col justify-center items-center gap-6 w-full">
+      <AuthContainer type="login">
+        <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col justify-center items-center gap-8 w-full">
           <InputGroup  
             label="Email"
             id="login-email"
@@ -76,11 +74,11 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="rounded-lg bg-bg-subtle text-text-body py-1 px-8 border-2 border-transparent cursor-pointer active:scale-90 transition-transform"
+            className="bg-primary-container px-14 py-2 text-white rounded-md mt-8 cursor-pointer"
           >
             {isLoading ? "Logging in..." : "Sign In"}
           </button>
         </form>
-      </>
+      </AuthContainer>
     );
 }

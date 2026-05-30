@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { isAxiosError } from "axios";
 import api from "@/lib/api";
 
-import InputGroup from "@/components/ui/InputGroup";
-import Toast from "@/components/ui/Toast";
+import AuthContainer from "@/components/auth/AuthContainer";
+import InputGroup from "@/components/auth/InputGroup";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -34,11 +34,9 @@ export default function RegisterPage() {
     };
 
     return (
-        <>
-            {error && <Toast message={error}/>}
-
-            <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center gap-6 w-full">
-                <InputGroup  
+        <AuthContainer type="register">
+                <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col justify-center items-center gap-8 w-full">
+                  <InputGroup  
                     label="Full Name"
                     id="register-full-name"
                     type="text"
@@ -62,14 +60,14 @@ export default function RegisterPage() {
                     required={true}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
-                <button
+                  <button
                     type="submit"
                     disabled={isLoading}
-                    className="rounded-lg bg-bg-subtle text-text-body py-1 px-8 border-2 border-transparent cursor-pointer active:scale-90 transition-transform"
-                >
-                    {isLoading ? "Loading..." : "Register"}
-                </button>
-            </form>
-        </>
+                    className="bg-primary-container px-14 py-2 text-white rounded-md mt-8 cursor-pointer"
+                  >
+                    {isLoading ? "Logging in..." : "Register"}
+                  </button>
+                </form>
+            </AuthContainer>
     )
 }

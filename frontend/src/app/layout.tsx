@@ -27,7 +27,19 @@ export default function RootLayout({
       lang="en"
       className={`${poppins.variable} ${lobster.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg-surface">{children}</body>
+      <body className="min-h-full flex flex-col relative bg-on-tertiary-container/20 overflow-x-hidden">
+  
+        <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-secondary-container/30 blur-3xl"></div>
+      
+          <div className="absolute top-[40%] left-[50%] w-[60%] h-[60%] rounded-full bg-secondary-container/20 blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 flex flex-col grow">
+          {children}
+        </div>
+  
+      </body>
     </html>
   );
 }
