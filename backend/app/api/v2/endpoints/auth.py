@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.employee import Employee
-from app.schemas.employee import EmployeeCreate, EmployeeResponse, Token
+from app.schemas.employee import EmployeeCreate, EmployeeResponse
 from app.core.security import get_password_hash, verify_password, create_access_token
+from app.api.deps import get_current_user
 
 router = APIRouter()
 
@@ -50,3 +51,10 @@ def login(
     )
     
     return {"message": "logged in successfully"}
+
+
+@router.get("/me")
+def current_user(
+    current_user: Employee = Depends(get_current_user)
+):
+    return current_user
