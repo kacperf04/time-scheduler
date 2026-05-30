@@ -7,7 +7,9 @@ from alembic import context
 
 from app.database import Base
 from app.models.employee import Employee
-from app.models.availability import Availability
+from app.models.availability import Availability, Unavailability
+from app.models.schedule import Schedule, ScheduleShift
+from app.models.demand import Demand, DemandSlot
 
 from app.database import SQLALCHEMY_DATABASE_URL
 
