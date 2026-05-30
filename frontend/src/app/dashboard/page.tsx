@@ -48,8 +48,8 @@ export default function DashboardPage() {
                 user={user} 
             />
 
-            <main className="pt-28 px-6 mx-auto w-full grow flex flex-col">
-                {activeTab === "dashboard" && <DashboardTab/>}
+            <main className="pt-28 px-10 mx-auto w-full grow flex flex-col">
+                {activeTab === "dashboard" && <DashboardTab user={user}/>}
                 {activeTab === "demands" && <DemandsTab/>}
                 {activeTab === "employees" && <EmployeesTab/>}
                 {activeTab === "generate-schedule" && <GenerateScheduleTab/>}

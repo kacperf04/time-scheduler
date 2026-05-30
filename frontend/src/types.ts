@@ -12,3 +12,24 @@ export interface User {
     is_admin: boolean; 
     email: string
 };
+
+export enum EmployeeRole {
+    MANAGER = "manager",
+    STAFF = "staff",
+    WAREHOUSE = "warehouse",
+    SECURITY = "security",
+};
+
+export interface DemandSlot {
+    date: string,
+    start_time: number,
+    end_time: number,
+    required_role: EmployeeRole,
+    required_employees: number
+};
+
+export interface Demand {
+    start_date: string,
+    end_date: string,
+    slots: Array<DemandSlot>
+};

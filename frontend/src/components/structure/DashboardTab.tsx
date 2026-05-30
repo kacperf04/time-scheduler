@@ -1,6 +1,17 @@
+import { User } from "@/types"
 
-export default function DashboardTab() {
+interface DashboardTabProps {
+    user: User | null
+};
+
+export default function DashboardTab(
+    {
+        user
+    } : DashboardTabProps
+) {
     return (
-        <p>Dashboard</p>
+        <div className="flex flex-col justify-center items-center gap-5">
+            <h3 className="text-2xl font-mono self-start">Welcome, {user?.name}</h3>
+        </div>
     )
 }
