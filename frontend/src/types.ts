@@ -34,3 +34,8 @@ export interface Demand {
     is_posted: boolean,
     slots: Array<DemandSlot>
 };
+
+export enum DemandSlotActionType {
+    VIEW = "view",
+    EDIT = "edit"
+}

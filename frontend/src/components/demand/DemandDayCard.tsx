@@ -1,6 +1,8 @@
-import { DemandSlot } from "@/types";
+import { DemandSlot, DemandSlotActionType } from "@/types";
 
 import { SquarePen, Info } from "lucide-react";
+import { useState } from "react";
+import DemandActionCard from "./DemandActionCard";
 
 interface DemandDayCardProps {
     day: number;
@@ -13,9 +15,21 @@ export default function DemandDayCard({
     demandSlot,
     isPosted
 }: DemandDayCardProps) {
+    const [demandModalActive, setDemandModalActive] = useState(false);
+    const [demandModalActionType, setDemandModalActionType] = useState<DemandSlotActionType | null>(null);
+
+    const editDemand = () => {
+        setDemandModalActive(true);
+        setDemandModalActionType(DemandSlotActionType.EDIT);
+    }
+
+    const viewDemand = () => {
+        setDemandModalActive(true);
+        setDemandModalActionType(DemandSlotActionType.VIEW);
+    }
 
     return (
-        <div className="bg-on-tertiary-container/10 rounded-lg mx-auto w-full h-full py-1 flex flex-col justify-between">
+        <div className="bg-on-tertiary-container/10 rounded-lg mx-auto w-full h-full pt-1 flex flex-col justify-between overflow-hidden">
             
             <div className="flex flex-row justify-between items-center px-2">
                 <span className="text-lg font-mono">{day}</span>
@@ -30,21 +44,26 @@ export default function DemandDayCard({
                 </div>
             </div>
 
-            <div className="flex flex-col items-start justify-center gap-2 pb-2 px-2 text-white text-sm">
-                <button className="group flex h-8 max-w-[32px] cursor-pointer items-center justify-start overflow-hidden rounded-full bg-primary-container/40 p-2 transition-all duration-300 ease-in-out hover:max-w-[200px]">
-                    <SquarePen size={16} className="shrink-0"/>
-                    <span className="ml-2 whitespace-nowrap opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        Edit demand
-                    </span>
+            <div className="w-full bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8">
+                <button className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
+                onClick={() => editDemand()}
+                >
+                    <SquarePen size={22} className=""/>
                 </button>
-                <button className="group flex h-8 max-w-[32px] cursor-pointer items-center justify-start overflow-hidden rounded-full bg-primary-container/40 p-2 transition-all duration-300 ease-in-out hover:max-w-[200px]">
-                    <Info size={16} className="shrink-0" />
-                    <span className="ml-2 whitespace-nowrap opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        View demand
-                    </span>
+                <button className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
+                onClick={() => viewDemand()}
+                >
+                    <Info size={22} className=""/>
                 </button>
             </div>
 
+            {demandModalActive && (
+                <DemandActionCard 
+                    demand={demandSlot} 
+                    onClose={() => setDemandModalActive(false)} 
+                    actionType={demandModalActionType}
+                />
+            )}
         </div>
     )
 }
