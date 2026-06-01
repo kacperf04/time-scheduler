@@ -31,5 +31,6 @@ export interface DemandSlot {
 export interface Demand {
     start_date: string,
     end_date: string,
+    is_posted: boolean,
     slots: Array<DemandSlot>
 };
