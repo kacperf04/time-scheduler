@@ -1,18 +1,21 @@
-import { DemandSlot, DemandSlotActionType } from "@/types";
-
+import { Demand, DemandSlotActionType } from "@/types";
 import { SquarePen, Info } from "lucide-react";
 import { useState } from "react";
-import DemandActionCard from "./DemandActionCard";
+import DemandActionCard from "./demandAction/DemandActionCard";
 
 interface DemandDayCardProps {
     day: number;
-    demandSlot: DemandSlot | null;
+    dateStr: string;
+    demand: Demand | null;
+    hasDemand: boolean;
     isPosted: boolean | undefined;
 }
 
 export default function DemandDayCard({
     day,
-    demandSlot,
+    dateStr,
+    demand,
+    hasDemand,
     isPosted
 }: DemandDayCardProps) {
     const [demandModalActive, setDemandModalActive] = useState(false);
@@ -30,40 +33,35 @@ export default function DemandDayCard({
 
     return (
         <div className="bg-on-tertiary-container/10 rounded-lg mx-auto w-full h-full pt-1 flex flex-col justify-between overflow-hidden">
-            
             <div className="flex flex-row justify-between items-center px-2">
-                <span className="text-lg font-mono">{day}</span>
-                
+                <span className="text-xl font-mono">{day}</span>
                 <div className={`w-8 h-4 rounded-full ${
-                    isPosted && demandSlot 
+                    isPosted && hasDemand 
                     ? "bg-green-400"
-                    : !isPosted && demandSlot
+                    : !isPosted && hasDemand
                     ? "bg-blue-400"
                     : "bg-red-400"
                 }`}>
                 </div>
             </div>
 
-            <div className="w-full bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8">
-                <button className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
-                onClick={() => editDemand()}
+            <div className="w-12 bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8 rounded-tr-lg">
+                <button 
+                    className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
+                    onClick={() => editDemand()}
                 >
-                    <SquarePen size={22} className=""/>
-                </button>
-                <button className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
-                onClick={() => viewDemand()}
-                >
-                    <Info size={22} className=""/>
+                    <SquarePen size={22} />
                 </button>
             </div>
 
             {demandModalActive && (
                 <DemandActionCard 
-                    demand={demandSlot} 
+                    demand={demand} 
+                    selectedDate={dateStr}
                     onClose={() => setDemandModalActive(false)} 
                     actionType={demandModalActionType}
                 />
             )}
         </div>
-    )
+    );
 }

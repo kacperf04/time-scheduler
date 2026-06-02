@@ -1,19 +1,21 @@
 import { useEffect } from "react";
-import { DemandSlot, DemandSlotActionType } from "@/types";
+import { Demand, DemandSlotActionType } from "@/types";
 import { X } from "lucide-react";
+import DemandActionTimeLine from "./DemandActionTimeline";
 
 interface DemandActionCardProps {
-    demand: DemandSlot | null;
+    demand: Demand | null;
+    selectedDate: string;
     onClose: () => void;
     actionType: DemandSlotActionType | null;
 }
 
 export default function DemandActionCard({
     demand,
+    selectedDate,
     onClose,
     actionType
 }: DemandActionCardProps) {
-
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         
@@ -28,7 +30,7 @@ export default function DemandActionCard({
             onClick={onClose}
         >
             <div 
-                className="bg-white w-3/4 h-96 flex flex-col items-end gap-4 p-4 rounded-md shadow-xl"
+                className="bg-white min-w-3/4 flex flex-col items-end gap-4 p-4 rounded-md shadow-xl"
                 onClick={(e) => e.stopPropagation()} 
             >
                 <button 
@@ -37,10 +39,10 @@ export default function DemandActionCard({
                 >
                     <X className="text-black" />
                 </button>
-
-                {actionType}
+                
+                <DemandActionTimeLine demand={demand} selectedDate={selectedDate} />
                 
             </div>
         </div>
-    )
+    );
 }
