@@ -27,8 +27,7 @@ export default function DemandDayCard({
     }
 
     const viewDemand = () => {
-        setDemandModalActive(true);
-        setDemandModalActionType(DemandSlotActionType.VIEW);
+        
     }
 
     return (
@@ -45,13 +44,24 @@ export default function DemandDayCard({
                 </div>
             </div>
 
-            <div className="w-12 bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8 rounded-tr-lg">
-                <button 
-                    className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
-                    onClick={() => editDemand()}
-                >
-                    <SquarePen size={22} />
-                </button>
+            <div className="flex flex-row justify-between">
+                <div className="w-12 bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8 rounded-tr-lg">
+                    <button 
+                        className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
+                        onClick={() => editDemand()}
+                    >
+                        <SquarePen size={22} />
+                    </button>
+                </div>
+
+                <div className="w-12 bg-secondary-container/30 flex flex-row justify-center items-center py-1 gap-8 rounded-tl-lg">
+                    <button 
+                        className="text-primary font-mono cursor-pointer p-2 rounded-full transition-colors"
+                        onClick={() => viewDemand()}
+                    >
+                        <Info size={22} />
+                    </button>
+                </div>
             </div>
 
             {demandModalActive && (
