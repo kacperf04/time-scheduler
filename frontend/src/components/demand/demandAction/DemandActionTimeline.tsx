@@ -5,16 +5,14 @@ import { WORK_START_HOUR, WORK_END_HOUR } from "@/constants";
 interface Props {
     demand: Demand | null;
     selectedDate?: string;
-    // Split into clear RESTful callbacks
     onCreate?: (newSlot: DemandSlot) => void;
     onUpdate?: (originalSlot: DemandSlot, updatedSlot: DemandSlot) => void;
     onDelete?: (slotToDelete: DemandSlot) => void;
 }
 
-// Internal type to handle form drafting without mutating real data
 type DraftSlot = {
     tempId: string;
-    originalData?: DemandSlot; // Undefined if it's a completely new draft
+    originalData?: DemandSlot;
     role: EmployeeRole;
     start_time: number;
     end_time: number;
@@ -42,7 +40,6 @@ export default function DemandActionTimeLine({
     } | null>(null);
     const isDragging = useRef(false);
 
-    // Form state
     const [fRole, setFRole] = useState<EmployeeRole>(roles[0]);
     const [fStart, setFStart] = useState(WORK_START_HOUR);
     const [fEnd, setFEnd] = useState(WORK_START_HOUR + 1);
@@ -51,7 +48,6 @@ export default function DemandActionTimeLine({
     const getSlot = useCallback((hour: number, role: EmployeeRole): DraftSlot | undefined => {
         if (!demand?.slots) return undefined;
         
-        // 1. Check for existing saved slots
         const real = demand.slots.find(s => {
             const matchesDate = selectedDate ? s.date === selectedDate : true;
             return s.required_role === role && hour >= s.start_time && hour < s.end_time && matchesDate;
@@ -68,7 +64,6 @@ export default function DemandActionTimeLine({
             };
         }
 
-        // 2. Check for the actively dragged "new" draft slot
         if (selectedSlot?.isNew && selectedSlot.role === role &&
             hour >= selectedSlot.start_time && hour < selectedSlot.end_time) {
             return selectedSlot;
@@ -141,7 +136,7 @@ export default function DemandActionTimeLine({
 
     const handleSave = () => {
         if (!selectedSlot) return;
-        if (fEnd <= fStart) return; // Basic validation
+        if (fEnd <= fStart) return;
 
         const targetDate = selectedDate || demand?.start_date || new Date().toISOString().split('T')[0];
 
@@ -176,8 +171,8 @@ export default function DemandActionTimeLine({
     const duration = fEnd - fStart;
 
     return (
-        <div className="flex flex-row gap-4">
-        <div className="flex h-full rounded-xl overflow-hidden">
+        <div className="flex flex-row gap-4 h-full">
+        <div className="flex h-full rounded-lg overflow-hidden items-start">
             <div className="flex-1 min-w-0 overflow-auto">
                 <div
                     className="grid min-w-max border-l border-secondary-container/20 select-none"
@@ -212,10 +207,9 @@ export default function DemandActionTimeLine({
                                     <div key={`slot-${role}-${h}`} className="border-l border-b border-secondary-container/20 min-h-[52px] p-1.5" style={{ gridColumn: `span ${span}` }}>
                                         <div
                                             onClick={() => handleSelectSlot(slot)}
-                                            className={`w-full h-full min-h-10 px-2 flex items-center justify-center gap-1 rounded-lg text-[11px] font-medium cursor-pointer transition-all whitespace-nowrap ${isSelected ? "ring-2 ring-primary ring-offset-1" : ""}`}
-                                            style={{ background: "var(--color-background-info)", border: "0.5px solid var(--color-border-info)", color: "var(--color-text-info)" }}
+                                            className={`w-full h-full min-h-10 px-2 flex items-center justify-center gap-1 rounded-lg text-md font-medium cursor-pointer font-mono transition-all whitespace-nowrap ${isSelected ? "bg-tertiary-container/20" : ""}`}
                                         >
-                                            {slot.required_employees} needed
+                                            {slot.required_employees}
                                         </div>
                                     </div>
                                 );
@@ -229,7 +223,7 @@ export default function DemandActionTimeLine({
                                         onMouseEnter={handleMouseEnter(role, h)}
                                         className={`border-l border-b border-secondary-container/20 min-h-[52px] cursor-crosshair transition-colors relative ${dragging ? "bg-primary/8" : "hover:bg-secondary-container/5"}`}
                                     >
-                                        {dragging && <div className="absolute inset-[3px] border-[1.5px] border-dashed border-primary/40 rounded-lg pointer-events-none" />}
+                                        {dragging && <div className="absolute inset-1 border-[1.5px] border-dashed border-primary/40 rounded-lg pointer-events-none" />}
                                     </div>
                                 );
                                 h++;
@@ -244,8 +238,8 @@ export default function DemandActionTimeLine({
         </div>
 
 
-            {/* ── Edit panel ── */}
-            <div className="w-[220px] flex-shrink-0 flex flex-col border-l border-secondary-container/20 bg-background">
+            {/* Edit panel */}
+            <div className=" flex flex-col rounded-lg border-2 border-primary-container/20 bg-background w-64 h-full">
                 <div className="px-4 py-3 border-b border-secondary-container/15 flex items-center justify-between">
                     <span className="text-[11px] font-medium tracking-widest uppercase text-on-surface/50">Edit</span>
                     {selectedSlot && (

@@ -30,7 +30,7 @@ export default function DemandActionCard({
             onClick={onClose}
         >
             <div 
-                className="bg-white min-w-3/4 flex flex-col items-end gap-4 p-4 rounded-md shadow-xl"
+                className="bg-white min-w-3/4 flex flex-col items-end gap-4 p-4 rounded-md shadow-xl min-h-[500px]"
                 onClick={(e) => e.stopPropagation()} 
             >
                 <button 
